@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>$wiss Army Knif¢</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="$wiss Army Knif¢">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;--surface:#141414;--surface2:#1a1a1a;--surface3:#222;
+  --accent:#1D9E75;--accent-dim:#0F6E56;--accent-light:#E1F5EE;
+  --text:#ffffff;--text2:#aaaaaa;--text3:#666666;
+  --border:#2a2a2a;--border2:#333;
+  --red:#C8102E;--amber:#EF9F27;--blue:#378ADD;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+.shell{max-width:780px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+
+/* TOPBAR */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.topbar-icon{width:34px;height:34px;border-radius:9px;background:var(--accent);display:flex;align-items:center;justify-content:center}
+.topbar-icon svg{width:18px;height:18px}
+.topbar-title{font-size:16px;font-weight:600;color:var(--text);letter-spacing:-.3px}
+.topbar-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.topbar-badge{font-size:11px;padding:4px 10px;border-radius:20px;background:#0F6E5620;color:var(--accent);font-weight:500;border:1px solid #1D9E7540}
+
+/* NAV */
+.nav-row{background:var(--surface);border-bottom:1px solid var(--border);padding:0 18px;display:flex;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.nav-row::-webkit-scrollbar{display:none}
+.nav-btn{padding:12px 14px;font-size:12px;font-weight:500;color:var(--text3);background:none;border:none;cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.nav-btn:hover:not(.active){color:var(--text2)}
+
+/* BODY */
+.body{flex:1;padding:16px;overflow-y:auto}
+.screen{display:none}.screen.active{display:block}
+.section-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:16px 0 8px}
+.section-label:first-child{margin-top:0}
+
+/* STAT ROW */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.stat{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+.stat-label{font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em}
+.stat-val{font-size:22px;font-weight:600;color:var(--text)}
+.stat-sub{font-size:10px;color:var(--text3);margin-top:2px}
+
+/* CARD GRID */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.card-tile{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;transition:border-color .15s}
+.card-tile:hover{border-color:var(--border2)}
+.logo-wrap{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;font-weight:700}
+.card-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
+.card-type{font-size:11px;color:var(--text3)}
+.card-badge{font-size:10px;padding:3px 8px;border-radius:20px;align-self:flex-start;line-height:1.4;font-weight:500}
+
+/* HUB BOX */
+.hub-box{background:var(--surface2);border:1px solid var(--accent-dim);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.hub-icon-wrap{width:38px;height:38px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hub-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:7px}
+.hub-row{display:flex;gap:10px;font-size:12px;margin-bottom:3px}
+.hub-key{color:var(--text3);min-width:100px}
+.hub-val{color:var(--text2);line-height:1.5}
+
+/* PILLS */
+.pill-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.pill{font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--border2);background:var(--surface2);color:var(--text3);cursor:pointer;font-family:inherit;font-weight:500;transition:all .15s}
+.pill:hover{border-color:var(--accent);color:var(--accent)}
+.pill.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* TRANSFER */
+.transfer-list{display:flex;flex-direction:column;gap:6px}
+.transfer-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+.transfer-from{font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.transfer-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.transfer-tags{display:flex;flex-wrap:wrap;gap:5px}
+.ttag{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:500}
+.ttag.inst{background:#1D9E7520;color:var(--accent);border:1px solid #1D9E7540}
+.ttag.fee{background:#EF9F2720;color:var(--amber);border:1px solid #EF9F2740}
+.ttag.slow{background:#33333380;color:var(--text3);border:1px solid var(--border)}
+.ttag.zelle{background:#378ADD20;color:var(--blue);border:1px solid #378ADD40}
+.legend-row{display:flex;gap:14px;flex-wrap:wrap;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-top:8px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)}
+.legend-dot{width:7px;height:7px;border-radius:50%}
+
+/* SITUATIONS */
+.sit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:8px}
+.sit-card{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;transition:border-color .15s}
+.sit-card:hover{border-color:var(--border2)}
+.sit-icon-box{width:32px;height:32px;border-radius:8px;background:var(--surface3);display:flex;align-items:center;justify-content:center;margin-bottom:8px;font-size:16px}
+.sit-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.sit-rec{font-size:12px;color:var(--text2);line-height:1.5}
+.sit-primary{font-size:10px;font-weight:600;margin-top:8px;padding:4px 10px;border-radius:8px;background:#1D9E7520;color:var(--accent);display:inline-block;border:1px solid #1D9E7540}
+
+/* REWARDS */
+.reward-list{display:flex;flex-direction:column;gap:6px}
+.reward-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;transition:border-color .15s}
+.reward-card:hover{border-color:var(--border2)}
+.reward-header{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.reward-logo{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:700}
+.reward-name{font-size:13px;font-weight:600;color:var(--text)}
+.reward-desc{font-size:12px;color:var(--text2);line-height:1.5}
+.reward-pills{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.rpill{font-size:10px;padding:2px 8px;border-radius:20px;background:var(--surface3);color:var(--text3);border:1px solid var(--border)}
+
+/* BALANCES */
+.limit-bar{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.limit-label{font-size:13px;color:var(--text2);flex:1}
+.limit-input{width:90px;padding:6px 10px;border-radius:8px;border:1px solid var(--border2);background:var(--surface3);color:var(--text);font-family:inherit;font-size:13px;text-align:right}
+.thresh-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tpill{font-size:11px;padding:4px 11px;border-radius:20px;font-weight:500}
+.bal-list{display:flex;flex-direction:column;gap:6px}
+.bal-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:12px}
+.bal-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.bal-info{flex:1}
+.bal-name{font-size:13px;font-weight:500;color:var(--text)}
+.bal-sub{font-size:10px;color:var(--text3)}
+.bal-input-wrap{display:flex;align-items:center;gap:4px}
+.bal-sym{font-size:13px;color:var(--text3)}
+.bal-input{width:86px;padding:5px 8px;border-radius:8px;border:1px solid var(--border2);background:var(--surface3);color:var(--text);font-family:inherit;font-size:13px;text-align:right}
+.bal-bar-bg{width:60px;height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;flex-shrink:0}
+.bal-bar{height:100%;border-radius:2px;transition:width .3s}
+.snap-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 6px}
+.snap-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center}
+.snap-label{font-size:10px;color:var(--text3);margin-bottom:3px;text-transform:uppercase;letter-spacing:.05em}
+.snap-val{font-size:20px;font-weight:600;color:var(--text)}
+.util-alert{font-size:12px;padding:8px 12px;border-radius:10px;line-height:1.5;margin-top:6px}
+
+/* CREDIT */
+.factor-list{display:flex;flex-direction:column;gap:6px}
+.factor-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+.factor-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.factor-name{font-size:13px;font-weight:600;color:var(--text)}
+.factor-pct{font-size:11px;color:var(--text3)}
+.factor-track{height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;margin-bottom:7px}
+.factor-fill{height:100%;border-radius:2px}
+.factor-tip{font-size:12px;color:var(--text2);line-height:1.5}
+.action-list{display:flex;flex-direction:column;gap:6px}
+.action-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px 14px;display:flex;gap:10px;align-items:flex-start}
+.action-num{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.action-text{font-size:12px;color:var(--text2);line-height:1.6}
+.action-text strong{color:var(--text);font-weight:600}
+
+/* LINKING */
+.link-list{display:flex;flex-direction:column;gap:8px}
+.link-card{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px}
+.link-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.link-logo{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:700}
+.link-name{font-size:13px;font-weight:600;color:var(--text)}
+.link-type{font-size:11px;color:var(--text3);margin-top:1px}
+.link-rows{display:flex;flex-direction:column;gap:5px}
+.link-row{display:flex;gap:10px;font-size:12px}
+.link-key{color:var(--text3);min-width:85px}
+.link-val{color:var(--text2);line-height:1.5;flex:1}
+.link-val strong{color:var(--text);font-weight:600}
+
+/* APPLE PAY */
+.apple-section{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:8px}
+.apple-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.apple-row{display:flex;gap:10px;font-size:12px;padding:7px 0;border-bottom:1px solid var(--border)}
+.apple-row:last-child{border-bottom:none;padding-bottom:0}
+.apple-row-card{font-weight:600;color:var(--text);min-width:130px}
+.apple-row-why{color:var(--text2);line-height:1.5;flex:1}
+
+/* ADVISOR */
+.advisor-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.advisor-msgs{min-height:220px;max-height:320px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px}
+.msg{padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.6;max-width:86%}
+.msg.bot{background:var(--surface3);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.user{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.advisor-footer{border-top:1px solid var(--border)}
+.quick-wrap{display:flex;flex-wrap:wrap;gap:5px;padding:10px 12px;border-bottom:1px solid var(--border)}
+.qbtn{font-size:11px;padding:5px 11px;border-radius:20px;border:1px solid var(--border2);background:var(--surface3);color:var(--text3);cursor:pointer;font-family:inherit;font-weight:500;transition:all .15s}
+.qbtn:hover{border-color:var(--accent);color:var(--accent)}
+.input-row{display:flex;gap:8px;padding:10px 12px}
+.input-row input{flex:1;padding:9px 13px;border-radius:10px;border:1px solid var(--border2);background:var(--surface3);color:var(--text);font-family:inherit;font-size:13px}
+.input-row input::placeholder{color:var(--text3)}
+.send-btn{padding:9px 18px;border-radius:10px;background:var(--accent);color:#fff;border:none;font-size:13px;cursor:pointer;font-family:inherit;font-weight:600}
+.send-btn:hover{background:var(--accent-dim)}
+
+.info-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 13px;font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:12px}
+.info-box strong{color:var(--text);font-weight:600}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-icon">
+        <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1.5" fill="#fff"/><rect x="10" y="2" width="6" height="6" rx="1.5" fill="#fff" opacity=".7"/><rect x="2" y="10" width="6" height="6" rx="1.5" fill="#fff" opacity=".7"/><rect x="10" y="10" width="6" height="6" rx="1.5" fill="#fff" opacity=".5"/></svg>
+      </div>
+      <div>
+        <div class="topbar-title">$wiss Army Knif¢</div>
+        <div class="topbar-sub">9 cards · Capital One 360 hub</div>
+      </div>
+    </div>
+    <div class="topbar-badge">Rebuilding credit</div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn active" onclick="show('dash',this)">Dashboard</button>
+    <button class="nav-btn" onclick="show('transfers',this)">Transfers</button>
+    <button class="nav-btn" onclick="show('linking',this)">Linking</button>
+    <button class="nav-btn" onclick="show('applepay',this)">Apple Pay</button>
+    <button class="nav-btn" onclick="show('situations',this)">Situations</button>
+    <button class="nav-btn" onclick="show('rewards',this)">Rewards</button>
+    <button class="nav-btn" onclick="show('balances',this)">Balances</button>
+    <button class="nav-btn" onclick="show('credit',this)">Credit</button>
+    <button class="nav-btn" onclick="show('advisor',this)">Advisor</button>
+  </div>
+
+  <div class="body">
+
+    <div id="dash" class="screen active">
+      <div class="stat-row">
+        <div class="stat"><div class="stat-label">Cards active</div><div class="stat-val">9</div><div class="stat-sub">All connected</div></div>
+        <div class="stat"><div class="stat-label">Credit limit</div><div class="stat-val">$200</div><div class="stat-sub">Quicksilver</div></div>
+        <div class="stat"><div class="stat-label">Safe to spend</div><div class="stat-val" style="color:var(--accent)">$60</div><div class="stat-sub">30% threshold</div></div>
+      </div>
+      <div class="section-label">Your cards</div>
+      <div class="card-grid" id="cardGrid"></div>
+      <div class="section-label">Hub</div>
+      <div class="hub-box">
+        <div class="hub-icon-wrap">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="#fff" stroke-width="1.5"/><path d="M9 5v4l3 2" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div style="flex:1">
+          <div class="hub-title">Capital One 360 Checking — everything flows here</div>
+          <div class="hub-row"><span class="hub-key">Direct deposit</span><span class="hub-val">Primary account — longest held</span></div>
+          <div class="hub-row"><span class="hub-key">Physical wallet</span><span class="hub-val">Quicksilver · Schwab · Cap One 360 debit</span></div>
+          <div class="hub-row"><span class="hub-key">Apple Wallet</span><span class="hub-val">All 9 cards + Klarna one-time (generated in Klarna app)</span></div>
+          <div class="hub-row"><span class="hub-key">Credit lever</span><span class="hub-val">Quicksilver only — sole card reporting to bureaus</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="transfers" class="screen">
+      <div class="section-label">Filter by speed</div>
+      <div class="pill-row">
+        <button class="pill active" onclick="filterT('all',this)">All</button>
+        <button class="pill" onclick="filterT('inst',this)">Instant free</button>
+        <button class="pill" onclick="filterT('zelle',this)">Zelle</button>
+        <button class="pill" onclick="filterT('fee',this)">Has fee</button>
+      </div>
+      <div class="transfer-list" id="transferList"></div>
+      <div class="legend-row">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Instant, free</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Zelle, free</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Instant, fee</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#555"></div>1–3 days</div>
+      </div>
+    </div>
+
+    <div id="linking" class="screen">
+      <div class="info-box"><strong>Rule:</strong> Every card links back to Capital One 360 Checking. P2P apps are corridors — money flows in, sweeps to hub. Schwab connects via Zelle, not ACH.</div>
+      <div class="link-list" id="linkList"></div>
+    </div>
+
+    <div id="applepay" class="screen">
+      <div class="apple-section">
+        <div class="apple-title">Apple Cash — your 9th P2P platform</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7">Apple Cash lets any iPhone user send you money via iMessage — no app download required on their end. Set it up in Settings → Wallet. Link it to Capital One 360 and sweep balances there. It covers the people who "don't use Venmo."</div>
+      </div>
+      <div class="apple-section">
+        <div class="apple-title">Default card for purchases</div>
+        <div class="apple-row"><div class="apple-row-card">Quicksilver (default)</div><div class="apple-row-why">1.5% cashback on every tap. Set in Settings → Wallet → Default Card.</div></div>
+        <div class="apple-row"><div class="apple-row-card">Schwab (backup)</div><div class="apple-row-why">Use abroad or when Quicksilver is near $200 limit.</div></div>
+        <div class="apple-row"><div class="apple-row-card">Cap One 360 debit</div><div class="apple-row-why">Secondary debit backup.</div></div>
+      </div>
+      <div class="apple-section">
+        <div class="apple-title">All cards to load in Apple Wallet</div>
+        <div class="apple-row"><div class="apple-row-card">Quicksilver</div><div class="apple-row-why">Default. 1.5% on every tap.</div></div>
+        <div class="apple-row"><div class="apple-row-card">Schwab debit</div><div class="apple-row-why">Travel, ATM, international.</div></div>
+        <div class="apple-row"><div class="apple-row-card">Cap One 360 debit</div><div class="apple-row-why">Hub backup debit.</div></div>
+        <div class="apple-row"><div class="apple-row-card">Chime debit</div><div class="apple-row-why">SpotMe & early deposit.</div></div>
+        <div class="apple-row"><div class="apple-row-card">Venmo debit</div><div class="apple-row-why">Venmo-prompted merchants.</div></div>
+        <div class="apple-row"><div class="apple-row-card">PayPal debit</div><div class="apple-row-why">PayPal-affiliated merchants.</div></div>
+        <div class="apple-row"><div class="apple-row-card">Cash App debit</div><div class="apple-row-why">Boost-eligible purchases.</div></div>
+        <div class="apple-row"><div class="apple-row-card">Apple Cash</div><div class="apple-row-why">Receive from iPhone users. Sweep to Cap One.</div></div>
+        <div class="apple-row"><div class="apple-row-card">Klarna (one-time)</div><div class="apple-row-why">Generate in Klarna app → appears in Wallet → tap → expires. BNPL anywhere Apple Pay accepted.</div></div>
+      </div>
+    </div>
+
+    <div id="situations" class="screen">
+      <div class="sit-grid" id="sitGrid"></div>
+    </div>
+
+    <div id="rewards" class="screen">
+      <div class="reward-list" id="rewardList"></div>
+    </div>
+
+    <div id="balances" class="screen">
+      <div class="limit-bar">
+        <span class="limit-label">Quicksilver credit limit</span>
+        <div style="display:flex;align-items:center;gap:4px"><span class="bal-sym">$</span><input class="limit-input" type="number" id="limitInput" value="200" min="1" step="50" oninput="updateLimit(this.value)"></div>
+      </div>
+      <div class="thresh-row">
+        <span class="tpill" style="background:#1D9E7520;color:var(--accent);border:1px solid #1D9E7540">Ideal: under $<span id="t10">20</span></span>
+        <span class="tpill" style="background:#EF9F2720;color:var(--amber);border:1px solid #EF9F2740">Max: $<span id="t30">60</span> (30%)</span>
+        <span class="tpill" style="background:#C8102E20;color:#E24B4A;border:1px solid #C8102E40">Danger: over $<span id="t50">100</span></span>
+      </div>
+      <div class="bal-list" id="balList"></div>
+      <div class="snap-row">
+        <div class="snap-card"><div class="snap-label">Total liquid</div><div class="snap-val" id="totLiquid">$0</div></div>
+        <div class="snap-card"><div class="snap-label">Credit balance</div><div class="snap-val" id="totCredit" style="color:#E24B4A">$0</div></div>
+        <div class="snap-card"><div class="snap-label">Utilization</div><div class="snap-val" id="totUtil">—</div></div>
+      </div>
+      <div id="utilWarn"></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:8px;line-height:1.5">Balances reset each session. P2P balances have limited FDIC coverage — keep lean.</div>
+    </div>
+
+    <div id="credit" class="screen">
+      <div class="info-box" style="border-color:var(--accent-dim)">
+        <strong>The $200 limit game plan:</strong> Use Quicksilver for small controlled purchases. Pay it down before the statement closes — not just by the due date. Statement balance is what gets reported. Keep it under $60, ideally under $20.
+      </div>
+      <div class="section-label">Score factors</div>
+      <div class="factor-list" id="factorList"></div>
+      <div class="section-label">Action plan</div>
+      <div class="action-list" id="actionList"></div>
+    </div>
+
+    <div id="advisor" class="screen">
+      <div class="advisor-wrap">
+        <div class="advisor-msgs" id="msgs">
+          <div class="msg bot">Hey! I know your full setup — 9 cards, $200 Quicksilver limit, Capital One 360 as your hub. Ask me anything about your $wiss Army Knif¢.</div>
+        </div>
+        <div class="advisor-footer">
+          <div class="quick-wrap">
+            <button class="qbtn" onclick="ask('How do I manage Quicksilver with only a $200 limit?')">$200 strategy</button>
+            <button class="qbtn" onclick="ask('Fastest free way to move money between my accounts?')">Fastest transfer</button>
+            <button class="qbtn" onclick="ask('I am traveling internationally — which cards?')">Travel setup</button>
+            <button class="qbtn" onclick="ask('Someone wants to pay me via Apple Pay — what do I do?')">Receive Apple Pay</button>
+            <button class="qbtn" onclick="ask('When should I use Klarna instead of Quicksilver?')">Klarna vs QS</button>
+          </div>
+          <div class="input-row">
+            <input id="ainput" type="text" placeholder="Ask about your cards..." onkeydown="if(event.key==='Enter')sendMsg()">
+            <button class="send-btn" onclick="sendMsg()">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const CARDS=[
+  {name:'PayPal Debit',type:'P2P + Debit',badge:'Linked → Cap One 360',bc:'#1D9E7520',bt:'#1D9E75',color:'#003087',initials:'PP'},
+  {name:'Venmo',type:'P2P + Debit',badge:'Instant to PayPal, free',bc:'#378ADD20',bt:'#378ADD',color:'#008CFF',initials:'V'},
+  {name:'Cash App',type:'P2P + Debit',badge:'Boost discounts weekly',bc:'#EF9F2720',bt:'#EF9F27',color:'#00D64F',initials:'$'},
+  {name:'Capital One 360',type:'Main hub · longest held',badge:'Direct deposit here',bc:'#1D9E7520',bt:'#1D9E75',color:'#D03027',initials:'C1'},
+  {name:'Quicksilver',type:'Credit · $200 limit',badge:'Keep under $60 always',bc:'#C8102E20',bt:'#E24B4A',color:'#C8102E',initials:'QS'},
+  {name:'Chime',type:'Checking + Debit',badge:'SpotMe · early deposit',bc:'#1D9E7520',bt:'#1D9E75',color:'#1EC677',initials:'CH'},
+  {name:'Klarna',type:'BNPL · Apple Pay virtual',badge:'Generate one-time in app',bc:'#D4537E20',bt:'#D4537E',color:'#D4537E',initials:'K'},
+  {name:'Charles Schwab',type:'Travel + ATM satellite',badge:'All ATM fees rebated',bc:'#378ADD20',bt:'#378ADD',color:'#00A9CE',initials:'CS'},
+  {name:'Apple Cash',type:'Apple Pay P2P',badge:'Receive from iPhone users',bc:'#66666620',bt:'#aaa',color:'#2a2a2a',initials:''},
+];
+
+const TRANSFERS=[
+  {from:'PayPal Debit',dot:'#003087',tags:[{l:'Venmo (instant, free)',c:'inst'},{l:'Capital One (instant, small fee)',c:'fee'},{l:'Other banks (1–3 days)',c:'slow'}]},
+  {from:'Venmo',dot:'#008CFF',tags:[{l:'PayPal (instant, free)',c:'inst'},{l:'Venmo users (instant)',c:'inst'},{l:'Bank instant (1.75% fee)',c:'fee'},{l:'Bank standard (1–3 days)',c:'slow'}]},
+  {from:'Cash App',dot:'#00D64F',tags:[{l:'Cash App users (instant)',c:'inst'},{l:'Bank instant (0.5–1.75%)',c:'fee'},{l:'Bank standard (1–3 days)',c:'slow'}]},
+  {from:'Apple Cash',dot:'#888',tags:[{l:'Apple Cash users (instant, free)',c:'inst'},{l:'Bank instant (1.5% fee)',c:'fee'},{l:'Bank standard (1–3 days)',c:'slow'}]},
+  {from:'Capital One 360',dot:'#D03027',tags:[{l:'360 Checking ↔ Savings (instant)',c:'inst'},{l:'Schwab via Zelle (instant, free)',c:'zelle'},{l:'Anyone on Zelle (instant, free)',c:'zelle'},{l:'External ACH (1–3 days)',c:'slow'}]},
+  {from:'Charles Schwab',dot:'#00A9CE',tags:[{l:'Schwab Brokerage (instant)',c:'inst'},{l:'Cap One via Zelle (instant, free)',c:'zelle'},{l:'Anyone on Zelle (instant, free)',c:'zelle'},{l:'External ACH (1–3 days)',c:'slow'}]},
+  {from:'Chime',dot:'#1EC677',tags:[{l:'Chime members (instant)',c:'inst'},{l:'External bank (1–3 days)',c:'slow'}]},
+  {from:'Klarna',dot:'#D4537E',tags:[{l:'Add money from bank (instant)',c:'inst'},{l:'Not a send/transfer platform',c:'slow'}]},
+];
+
+const SITUATIONS=[
+  {icon:'🍽',title:'Dining out',rec:'Quicksilver for 1.5% back. If near $60 limit, use Cap One 360 debit instead.',primary:'Quicksilver'},
+  {icon:'🛒',title:'Everyday shopping',rec:'Quicksilver for everything under $60. Klarna Pay in 4 for bigger purchases.',primary:'Quicksilver / Klarna'},
+  {icon:'✈️',title:'Travel abroad',rec:'Schwab — zero foreign fees, all ATM fees refunded globally.',primary:'Schwab Checking'},
+  {icon:'💸',title:'Splitting bills',rec:'Ask what they use — Venmo, Cash App, Zelle, or Apple Cash. You cover all.',primary:'Venmo / Cash App / Apple Cash'},
+  {icon:'🏧',title:'ATM cash',rec:'Always Schwab — every fee reimbursed globally. Never use Chime or PayPal at ATMs.',primary:'Schwab Checking'},
+  {icon:'🛍',title:'Big purchase',rec:'Klarna Pay in 4 — keeps Quicksilver clear. $100 on a $200 limit = 50% utilization.',primary:'Klarna'},
+  {icon:'⛽️',title:'Gas',rec:'Quicksilver if under $60. Cap One 360 debit if near limit — holds can inflate balance.',primary:'Quicksilver (watch balance)'},
+  {icon:'🌐',title:'Sketchy merchant',rec:'Klarna one-time virtual card — single use, expires after transaction.',primary:'Klarna one-time'},
+  {icon:'🏦',title:'Moving money fast',rec:'Zelle between Cap One 360 and Schwab — instant, free, no third party.',primary:'Zelle (Cap One ↔ Schwab)'},
+  {icon:'📵',title:'Phone dies',rec:'Physical cards cover everything. Quicksilver + Schwab + Cap One 360 handle any scenario.',primary:'3 physical cards'},
+  {icon:'🍎',title:'"Apple Pay me"',rec:'You have Apple Cash. They send via iMessage, lands in Wallet. Sweep to Cap One.',primary:'Apple Cash'},
+];
+
+const REWARDS=[
+  {color:'#C8102E',name:'Quicksilver — 1.5% cashback',desc:'Default card for every purchase. At $200 limit use for controlled amounts, pay mid-month. Builds credit and earns back simultaneously.',pills:['1.5% all purchases','No annual fee','Builds credit']},
+  {color:'#1C1C1E',name:'Apple Pay — Quicksilver default',desc:'Every tap uses Quicksilver by default = 1.5% automatically. Set once in Wallet settings.',pills:['1.5% on every tap','Contactless everywhere']},
+  {color:'#00D64F',name:'Cash App Boost',desc:'Activate before paying at participating merchants. Instant % off. Check every week — offers rotate.',pills:['Instant discount','Rotates weekly']},
+  {color:'#003087',name:'PayPal — merchant offers',desc:'Check Offers tab before online shopping. Periodic 5%+ cashback at select retailers.',pills:['Merchant-specific','Check before buying']},
+  {color:'#1EC677',name:'Chime — SpotMe + early deposit',desc:'Up to $200 overdraft fee-free. Direct deposit 2 days early. Keep funded for both perks.',pills:['SpotMe overdraft','2-day early deposit']},
+  {color:'#00A9CE',name:'Schwab — ATM rebates',desc:'Every ATM fee refunded worldwide. Sweep idle cash to brokerage. Best travel card you own.',pills:['All ATM fees rebated','No foreign tx fee']},
+  {color:'#D4537E',name:'Klarna — BNPL + privacy',desc:'Use Pay in 4 for anything over $60 to keep Quicksilver clear. One-time cards protect your real numbers.',pills:['0% Pay in 4','Utilization shield','One-time virtual']},
+];
+
+const LINKS=[
+  {name:'PayPal Debit',type:'P2P + Debit',color:'#003087',rows:[{k:'Primary bank',v:'<strong>Capital One 360 Checking</strong>'},{k:'Backup bank',v:'Schwab Checking'},{k:'Action',v:'Sweep balance to Cap One when it builds. Never store money here.'}]},
+  {name:'Venmo',type:'P2P + Debit',color:'#008CFF',rows:[{k:'Primary bank',v:'<strong>Capital One 360 Checking</strong>'},{k:'Backup bank',v:'Schwab Checking'},{k:'Action',v:'Standard withdrawal free 1–3 days. Instant costs 1.75%.'}]},
+  {name:'Cash App',type:'P2P + Debit',color:'#00D64F',rows:[{k:'Primary bank',v:'<strong>Capital One 360 Checking</strong>'},{k:'Backup bank',v:'Schwab Checking'},{k:'Action',v:'Activate Boosts before spending. Sweep balance to Cap One.'}]},
+  {name:'Apple Cash',type:'Apple Pay P2P',color:'#333',rows:[{k:'Linked bank',v:'<strong>Capital One 360 Checking</strong>'},{k:'Default card',v:'Set Quicksilver as default Apple Pay card — 1.5% back'},{k:'Action',v:'Receive from iPhone users. Transfer balance to Cap One.'}]},
+  {name:'Chime',type:'Checking + Debit',color:'#1EC677',rows:[{k:'Linked bank',v:'<strong>Capital One 360 Checking</strong> (ACH, 1–3 days)'},{k:'Direct deposit',v:'Optional: split small amount here for 2-day early access.'},{k:'Action',v:'Keep $200–300 for SpotMe. Move excess to Cap One.'}]},
+  {name:'Klarna',type:'BNPL + Virtual Debit',color:'#D4537E',rows:[{k:'Fund balance',v:'<strong>Capital One 360 Checking</strong> — add money as needed'},{k:'Pay in 4',v:'Link Quicksilver if allowed — earns 1.5% on first payment.'},{k:'Action',v:'Fund right before a purchase, use it, done. No standing balance.'}]},
+  {name:'Charles Schwab',type:'Travel + ATM satellite',color:'#00A9CE',rows:[{k:'Move money',v:'<strong>Zelle from/to Capital One 360</strong> — instant, free'},{k:'Brokerage',v:'Instant internal transfer from Schwab Checking'},{k:'Action',v:'Keep $300–500 float. Replenish via Zelle before travel.'}]},
+  {name:'Quicksilver',type:'Credit card · $200 limit',color:'#C8102E',rows:[{k:'Autopay',v:'<strong>Capital One 360 Checking — full statement balance</strong>'},{k:'Already linked',v:'Same Capital One ecosystem — seamless.'},{k:'Action',v:'Use for purchases. Keep under $60 on statement date.'}]},
+  {name:'Cap One 360 Savings',type:'High-yield savings',color:'#B02020',rows:[{k:'Linked to',v:'<strong>Cap One 360 Checking</strong> — instant internal transfer'},{k:'Auto-transfer',v:'Set recurring transfer from Checking → Savings on payday.'},{k:'Action',v:'Emergency fund. Don\'t touch unless you actually need it.'}]},
+];
+
+const FACTORS=[
+  {name:'Payment history',pct:35,color:'#1D9E75',tip:'Biggest factor. Set Quicksilver autopay to full balance in the Capital One app today.'},
+  {name:'Credit utilization',pct:30,color:'#378ADD',tip:'At $200 limit: keep balance under $60 on statement date. Pay mid-month if needed.'},
+  {name:'Length of credit history',pct:15,color:'#EF9F27',tip:'Keep Quicksilver open forever. Never close it even after you get better cards.'},
+  {name:'Credit mix',pct:10,color:'#D4537E',tip:'One revolving card is correct. Installment loans add mix later — don\'t rush.'},
+  {name:'New credit / inquiries',pct:10,color:'#E24B4A',tip:'Don\'t apply for anything new for 6–12 months. Let this card season.'},
+];
+
+const ACTIONS=[
+  {n:1,t:'<strong>Autopay full balance.</strong> Capital One app → Quicksilver → Autopay → Full Statement Balance. Do this before your first purchase.'},
+  {n:2,t:'<strong>Keep statement balance under $60.</strong> Pay mid-month around day 20–25 before the statement generates.'},
+  {n:3,t:'<strong>Use it every month.</strong> Even one small purchase. Inactive cards can get closed by issuers.'},
+  {n:4,t:'<strong>Request limit increase at 6 months.</strong> Capital One app → card → Credit limit increase. Often no hard inquiry.'},
+  {n:5,t:'<strong>Monitor with CreditWise.</strong> Free in Capital One app. Check weekly. No hard inquiry.'},
+  {n:6,t:'<strong>None of your other cards build credit.</strong> PayPal, Venmo, Cash App, Chime, Apple Cash, Klarna, Schwab — none report to bureaus.'},
+  {n:7,t:'<strong>Timeline.</strong> 3–6 months: score starts moving. 12 months: meaningful improvement. 18–24 months: potentially 670+ with consistency.'},
+];
+
+const BAL_CARDS=[
+  {id:'paypal',name:'PayPal Debit',sub:'Sweep to Cap One',color:'#003087',type:'liquid',max:200},
+  {id:'venmo',name:'Venmo',sub:'Sweep to Cap One',color:'#008CFF',type:'liquid',max:200},
+  {id:'cashapp',name:'Cash App',sub:'Sweep to Cap One',color:'#00D64F',type:'liquid',max:200},
+  {id:'apple',name:'Apple Cash',sub:'Sweep to Cap One',color:'#444',type:'liquid',max:200},
+  {id:'cap360c',name:'Cap One 360 Checking',sub:'Main hub',color:'#D03027',type:'liquid',max:3000},
+  {id:'cap360s',name:'Cap One 360 Savings',sub:'Emergency fund',color:'#B02020',type:'liquid',max:5000},
+  {id:'chime',name:'Chime Checking',sub:'Keep $200–300 for SpotMe',color:'#1EC677',type:'liquid',max:1000},
+  {id:'klarna',name:'Klarna Balance',sub:'Fund as needed',color:'#D4537E',type:'liquid',max:500},
+  {id:'schwab',name:'Schwab Checking',sub:'Keep $300–500 float',color:'#00A9CE',type:'liquid',max:2000},
+  {id:'qsilver',name:'Quicksilver Balance',sub:'Keep under $60 on statement date!',color:'#C8102E',type:'credit',max:200},
+];
+
+const balances={};
+BAL_CARDS.forEach(c=>balances[c.id]=0);
+let creditLimit=200;
+
+function buildAll(){
+  const cg=document.getElementById('cardGrid');
+  CARDS.forEach(c=>{
+    const t=document.createElement('div');t.className='card-tile';
+    t.innerHTML=`<div style="display:flex;align-items:center;gap:10px"><div class="logo-wrap" style="background:${c.color}">${c.initials?`<span style="color:#fff;font-size:12px;font-weight:700">${c.initials}</span>`:`<svg width="16" height="16" viewBox="0 0 16 16"><text y="13" font-size="13" fill="#fff"></text></svg>`}</div><div><div class="card-name">${c.name}</div><div class="card-type">${c.type}</div></div></div><span class="card-badge" style="background:${c.bc};color:${c.bt}">${c.badge}</span>`;
+    cg.appendChild(t);
+  });
+
+  const tl=document.getElementById('transferList');
+  TRANSFERS.forEach(t=>{
+    const d=document.createElement('div');d.className='transfer-card';d.dataset.tags=t.tags.map(x=>x.c).join(' ');
+    d.innerHTML=`<div class="transfer-from"><div class="transfer-dot" style="background:${t.dot}"></div>${t.from}</div><div class="transfer-tags">${t.tags.map(x=>`<span class="ttag ${x.c}">${x.l}</span>`).join('')}</div>`;
+    tl.appendChild(d);
+  });
+
+  const sg=document.getElementById('sitGrid');
+  SITUATIONS.forEach(s=>{
+    const d=document.createElement('div');d.className='sit-card';
+    d.innerHTML=`<div class="sit-icon-box">${s.icon}</div><div class="sit-title">${s.title}</div><div class="sit-rec">${s.rec}</div><div class="sit-primary">${s.primary}</div>`;
+    sg.appendChild(d);
+  });
+
+  const rl=document.getElementById('rewardList');
+  REWARDS.forEach(r=>{
+    const d=document.createElement('div');d.className='reward-card';
+    d.innerHTML=`<div class="reward-header"><div class="reward-logo" style="background:${r.color}"></div><div class="reward-name">${r.name}</div></div><div class="reward-desc">${r.desc}</div><div class="reward-pills">${r.pills.map(p=>`<span class="rpill">${p}</span>`).join('')}</div>`;
+    rl.appendChild(d);
+  });
+
+  const ll=document.getElementById('linkList');
+  LINKS.forEach(l=>{
+    const d=document.createElement('div');d.className='link-card';
+    d.innerHTML=`<div class="link-header"><div class="link-logo" style="background:${l.color}"></div><div><div class="link-name">${l.name}</div><div class="link-type">${l.type}</div></div></div><div class="link-rows">${l.rows.map(r=>`<div class="link-row"><span class="link-key">${r.k}</span><span class="link-val">${r.v}</span></div>`).join('')}</div>`;
+    ll.appendChild(d);
+  });
+
+  const bl=document.getElementById('balList');
+  BAL_CARDS.forEach(c=>{
+    const d=document.createElement('div');d.className='bal-card';
+    d.innerHTML=`<div class="bal-dot" style="background:${c.color}"></div><div class="bal-info"><div class="bal-name">${c.name}</div><div class="bal-sub">${c.sub}</div></div><div class="bal-input-wrap"><span class="bal-sym">$</span><input class="bal-input" type="number" min="0" step="1" value="0" oninput="updateBal('${c.id}',this.value)"></div><div class="bal-bar-bg"><div class="bal-bar" id="bar-${c.id}" style="width:0%;background:${c.color}"></div></div>`;
+    bl.appendChild(d);
+  });
+
+  const fl=document.getElementById('factorList');
+  FACTORS.forEach(f=>{
+    const d=document.createElement('div');d.className='factor-card';
+    d.innerHTML=`<div class="factor-top"><span class="factor-name">${f.name}</span><span class="factor-pct">${f.pct}% of score</span></div><div class="factor-track"><div class="factor-fill" style="width:${f.pct*2}%;background:${f.color}"></div></div><div class="factor-tip">${f.tip}</div>`;
+    fl.appendChild(d);
+  });
+
+  const al=document.getElementById('actionList');
+  ACTIONS.forEach(a=>{
+    const d=document.createElement('div');d.className='action-card';
+    d.innerHTML=`<div class="action-num">${a.n}</div><div class="action-text">${a.t}</div>`;
+    al.appendChild(d);
+  });
+}
+
+function filterT(type,btn){
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.transfer-card').forEach(c=>{
+    c.style.display=(type==='all'||c.dataset.tags.includes(type))?'':'none';
+  });
+}
+
+function updateLimit(v){
+  creditLimit=parseFloat(v)||200;
+  const q=BAL_CARDS.find(c=>c.id==='qsilver');if(q)q.max=creditLimit;
+  document.getElementById('t10').textContent=Math.round(creditLimit*.1);
+  document.getElementById('t30').textContent=Math.round(creditLimit*.3);
+  document.getElementById('t50').textContent=Math.round(creditLimit*.5);
+  recalc();
+}
+
+function updateBal(id,val){
+  balances[id]=parseFloat(val)||0;
+  const card=BAL_CARDS.find(c=>c.id===id);
+  document.getElementById('bar-'+id).style.width=Math.min(100,(balances[id]/card.max)*100)+'%';
+  recalc();
+}
+
+function recalc(){
+  let liq=0,cred=0;
+  BAL_CARDS.forEach(c=>{if(c.type==='liquid')liq+=balances[c.id];else cred+=balances[c.id];});
+  document.getElementById('totLiquid').textContent='$'+liq.toLocaleString('en-US',{maximumFractionDigits:0});
+  document.getElementById('totCredit').textContent='$'+cred.toLocaleString('en-US',{maximumFractionDigits:0});
+  const util=creditLimit>0?Math.round((balances['qsilver']/creditLimit)*100):0;
+  const uel=document.getElementById('totUtil'),wel=document.getElementById('utilWarn');
+  if(balances['qsilver']>0){
+    uel.textContent=util+'%';
+    uel.style.color=util>30?'#E24B4A':util>10?'#EF9F27':'#1D9E75';
+    const m30=Math.round(creditLimit*.3),m10=Math.round(creditLimit*.1);
+    if(util>50)wel.innerHTML=`<div class="util-alert" style="background:#C8102E20;color:#E24B4A;border:1px solid #C8102E40">Utilization ${util}% — actively hurting your score. Pay down to under $${m30} before statement closes.</div>`;
+    else if(util>30)wel.innerHTML=`<div class="util-alert" style="background:#EF9F2720;color:#EF9F27;border:1px solid #EF9F2740">Utilization ${util}% — above 30% threshold. Get under $${m30} before statement date.</div>`;
+    else if(util>10)wel.innerHTML=`<div class="util-alert" style="background:#EF9F2715;color:#EF9F27;border:1px solid #EF9F2730">Utilization ${util}% — acceptable. Under $${m10} is ideal for max score impact.</div>`;
+    else wel.innerHTML=`<div class="util-alert" style="background:#1D9E7520;color:#1D9E75;border:1px solid #1D9E7540">Utilization ${util}% — excellent. Actively helping your credit score.</div>`;
+  } else {uel.textContent='—';uel.style.color='var(--text)';wel.innerHTML='';}
+}
+
+function show(id,btn){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+const SYS=`You are a personal finance card advisor. The user calls their setup a "financial swiss army knife" — the app is named $wiss Army Knif¢. They are rebuilding credit. Cards: PayPal Debit, Venmo, Cash App, Apple Cash (Apple Pay), Capital One 360 Checking & Savings (main hub, longest-held, direct deposit), Capital One Quicksilver ($200 limit, rebuilding credit), Chime, Klarna (fund balance directly; one-time virtual card via app pushes to Apple Pay temporarily), Charles Schwab (investor checking + brokerage). Hub: Cap One 360 Checking — everything links back here. Schwab connects via Zelle. Quicksilver autopays from Cap One 360. Klarna funded from Cap One 360. Apple Pay default: Quicksilver (1.5% per tap). Key: $200 Quicksilver limit — 30%=$60 max on statement date, 10%=$20 ideal. Pay before statement close not due date. Klarna for purchases over $60 to protect utilization. Schwab: all ATM fees rebated, no foreign fees, refill via Zelle. Only Quicksilver reports to credit bureaus. Physical wallet: Quicksilver + Schwab + Cap One 360 debit. Answer in 2-4 sentences, specific, reference actual cards only.`;
+
+async function sendMsg(){
+  const inp=document.getElementById('ainput');
+  const q=inp.value.trim();if(!q)return;
+  inp.value='';addMsg(q,'user');
+  const t=addMsg('Thinking...','bot');
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,messages:[{role:'user',content:q}]})});
+    const d=await r.json();t.textContent=d.content[0].text;
+  }catch(e){t.textContent='Unable to connect to advisor. Check other tabs for info.';}
+  document.getElementById('msgs').scrollTop=9999;
+}
+
+function ask(q){document.getElementById('ainput').value=q;sendMsg();}
+function addMsg(text,role){
+  const m=document.createElement('div');m.className='msg '+role;m.textContent=text;
+  const c=document.getElementById('msgs');c.appendChild(m);c.scrollTop=9999;return m;
+}
+
+buildAll();
+</script>
+</body>
+</html>
